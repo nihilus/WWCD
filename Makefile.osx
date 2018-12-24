@@ -1,0 +1,41 @@
+CXX ?= clang++
+MACSDK=$(shell xcrun --show-sdk-path --sdk macosx)
+CXXFLAGS=-fPIC -shared -Wall -Wextra -std=c++11 -isysroot $(MACSDK)  -stdlib=libc++ -DUSE_DANGEROUS_FUNCTIONS=1 -DUSE_STANDARD_FILE_FUNCTIONS=1
+LDFLAGS=-L/opt/local/lib/
+LIBS=-lelf -ldwarf -lz
+INCLUDES=-I$(IDASDK_PATH)/include -I$(IDA_PATH)/plugins/hexrays_sdk/include  -I/opt/local/include/libelf -I/opt/local/include
+
+WWCD_SRC = $(wildcard *.cpp)
+
+all: check-env bin/wwcd.dylib bin/wwcd64.dylib
+
+bin/wwcd.dylib: $(WWCD_SRC)
+	$(CXX) $(LDFLAGS) $(WWCD_SRC) $(CXXFLAGS) \
+	-L. \
+	-L$(IDA_PATH) -L$(IDASDK_PATH)/lib/x64_mac_gcc_32/ \
+	$(INCLUDES) \
+	-D__MAC__ -D__X64__ $(LIBS) -lida -o bin/wwcd.dylib
+
+bin/wwcd64.dylib: $(WWCD_SRC)
+	$(CXX) $(LDFLAGS) $(WWCD_SRC) $(CXXFLAGS) \
+	-L. \
+	-L$(IDA_PATH) -L$(IDASDK_PATH)/lib/x64_mac_gcc_64/ \
+	$(INCLUDES) \
+	-D__MAC__ -D__X64__ -D__EA64__ $(LIBS) -lida64 -o bin/wwcd64.dylib
+
+clean:
+	rm -f bin/wwcd.dylib bin/wwcd64.dylib
+
+install:
+	cp -f bin/wwcd.dylib $(IDA_PATH)/plugins/
+	cp -f bin/wwcd64.dylib $(IDA_PATH)/plugins/
+
+check-env:
+ifndef IDASDK_PATH
+    $(error IDASDK_PATH is undefined)
+endif
+ifndef IDA_PATH
+    $(error IDA_PATH is undefined)
+endif
+
+.PHONY: check-env
