@@ -223,11 +223,11 @@ static int x86_proc(outctx_t *ctx)
 					const auto c = new qstring("");
 					get_short_name(c, op.imm);
 					if (c->length() > 0) {
-						sprintf_s(temp, "%s", c->c_str());
+						sprintf(temp, "%s", c->c_str());
 						ctx->out_line(temp, get_name_color(op.imm, op.imm));
 					}
 					else {
-						sprintf_s(temp, NUMBER_FORMAT, op.imm);
+						sprintf(temp, NUMBER_FORMAT, op.imm);
 						ctx->out_line(temp, COLOR_NUMBER);
 					}
 					delete c;
@@ -240,9 +240,9 @@ static int x86_proc(outctx_t *ctx)
 					int op_size = (op.size > 0 && op.size <= 64) ? op.size : 0;
 
 					if (is_mm)
-						sprintf_s(temp, "%s ptr ", mm0_mem_size[op_size].c_str());
+						sprintf(temp, "%s ptr ", mm0_mem_size[op_size].c_str());
 					else
-						sprintf_s(temp, "%s ptr ", mem_size[op_size].c_str());
+						sprintf(temp, "%s ptr ", mem_size[op_size].c_str());
 
 					ctx->out_line(temp, COLOR_KEYWORD);
 
@@ -287,7 +287,7 @@ static int x86_proc(outctx_t *ctx)
 							ctx->out_line(" + ", COLOR_DEFAULT);
 						}
 
-						sprintf_s(temp, /*1024,*/ NUMBER_FORMAT_RELATIVE, offset);
+						sprintf(temp, /*1024,*/ NUMBER_FORMAT_RELATIVE, offset);
 						ctx->out_line(temp, COLOR_NUMBER);
 					}
 					else //#base + #index * #scale + #displacement
@@ -316,7 +316,7 @@ static int x86_proc(outctx_t *ctx)
 							{
 								ctx->out_line("*", COLOR_DEFAULT);
 								//result += "*";
-								sprintf_s(temp, "0x%02X", mem.scale);
+								sprintf(temp, "0x%02X", mem.scale);
 								//result += temp;
 								ctx->out_line(temp, COLOR_NUMBER);
 							}
@@ -330,10 +330,10 @@ static int x86_proc(outctx_t *ctx)
 							if (mem.disp < 0)
 							{
 								operatorText = " - ";
-								sprintf_s(temp, NUMBER_FORMAT_RELATIVE, mem.disp * -1);
+								sprintf(temp, NUMBER_FORMAT_RELATIVE, mem.disp * -1);
 							}
 							else
-								sprintf_s(temp, NUMBER_FORMAT_RELATIVE, mem.disp);
+								sprintf(temp, NUMBER_FORMAT_RELATIVE, mem.disp);
 
 							if (prepend_plus) {
 								//result += operatorText;
@@ -485,8 +485,8 @@ struct wwcdcv_ah_t : public action_handler_t
 
 static wwcd_ah_t wwcd_ah;
 static wwcdcv_ah_t wwcdcv_ah;
-static action_desc_t wwcd_action = ACTION_DESC_LITERAL("WWCD", "What Would Capstone Decode?", &wwcd_ah, "Ctrl+Alt+C", NULL, icon);
-static action_desc_t wwcdcv_action = ACTION_DESC_LITERAL("WWCDCV", "Capstone View", &wwcdcv_ah, "Ctrl+Alt+Shift+C", NULL, icon);
+static action_desc_t wwcd_action = ACTION_DESC_LITERAL("WWCD:WWCD", "What Would Capstone Decode?", &wwcd_ah, "Ctrl+Alt+C", NULL, icon);
+static action_desc_t wwcdcv_action = ACTION_DESC_LITERAL("WWCD:WWCDCV", "Capstone View", &wwcdcv_ah, "Ctrl+Alt+Shift+C", NULL, icon);
 
 
 struct ida_local lambda_t
@@ -500,8 +500,8 @@ struct ida_local lambda_t
 			if (get_widget_type(widget) == BWN_DISASM)
 			{
 				attach_action_to_popup(widget, popup_handle, "");
-				attach_action_to_popup(widget, popup_handle, "WWCD");
-				attach_action_to_popup(widget, popup_handle, "WWCDCV", "Hide", SETMENU_APP);
+				attach_action_to_popup(widget, popup_handle, "WWCD:WWCD");
+				attach_action_to_popup(widget, popup_handle, "WWCD:WWCDCV", "Hide", SETMENU_APP);
 			}
 		}
 		return 0;

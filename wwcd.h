@@ -1,20 +1,14 @@
-#include <string>
-
-#ifndef sprintf_s
-#define USE_DANGEROUS_FUNCTIONS
-#define sprintf_s sprintf
-#endif
-
 #include <ida.hpp>
 #include <idp.hpp>
-#include <bytes.hpp>
 #include <loader.hpp>
 #include <kernwin.hpp>
+#include <bytes.hpp>
 #include <allins.hpp>
 #include <diskio.hpp>
 #include <name.hpp>
 #include <pro.h>
 #include <segregs.hpp>
+#include <string>
 #include <vector>
 #include <map>
 #include "capstone/capstone.h"
